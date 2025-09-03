@@ -78,7 +78,36 @@ go build -o deepinfra
 deepinfra.exe -p 8080
 ```
 
-项目中还包含用于交叉编译的脚本示例 `build_linux_amd64.ps1`。
+项目中还包含用于交叉编译并打包为 linux tar.gz 的脚本示例 `build_linux_amd64.ps1`。
+
+该脚本在打包时会按优先级检测并使用下列压缩工具：
+
+1. pa1（优先）
+2. pigz（并行 gzip，次优）
+3. 回退到系统自带的 tar -czf
+
+如果你的环境中安装了 pa1，会优先使用它来加速压缩；未安装则尝试 pigz，仍不可用时使用 tar 的默认 gzip 实现。
+
+使用示例（在 PowerShell Core 下运行）：
+
+```powershell
+# 进入项目目录后：
+./build_linux_amd64.ps1 -ProjectPath . -OutputName deepinfra -Version 1.2.3 -Strip
+```
+
+如果你想手动使用 pa1 打包（pa1 将生成 .tar.pa1 或 .pa1，根据工具行为）：
+
+```bash
+# 在 Linux 上：
+# 先生成可执行文件 deepinfra，然后：
+# 1) 打包为 tar：
+tar -cf deepinfra-linux-amd64.tar deepinfra
+# 2) 使用 pa1 压缩（示例，具体参数请参考 pa1 文档）
+pa1 deepinfra-linux-amd64.tar
+# 或使用 pigz：
+pigz -k -f deepinfra-linux-amd64.tar
+# 生成的文件名会因工具而异，如 deepinfra-linux-amd64.tar.pa1 或 deepinfra-linux-amd64.tar.gz
+```
 
 ## 配置项
 
@@ -100,4 +129,3 @@ deepinfra.exe -p 8080
 ## 许可
 
 MIT License（若需要其他许可，请自行更改）。
-

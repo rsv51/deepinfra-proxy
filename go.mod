@@ -1,3 +1,3 @@
 module github.com/uouuou/deepinfra-proxy
 
-go 1.25.0
+go 1.23.0

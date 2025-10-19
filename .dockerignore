@@ -1,0 +1,7 @@
+.git
+.gitignore
+.idea
+*.md
+*.ps1
+deepinfra
+deepinfra-linux-amd64.tar.gz
